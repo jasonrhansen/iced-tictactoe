@@ -7,7 +7,7 @@ use iced::{
         canvas::{Frame, Geometry, Path, Program, Stroke},
         column, container, horizontal_space, row, text, vertical_space, Canvas,
     },
-    window, Application, Command, Rectangle, Renderer, Settings, Theme,
+    window, Application, Color, Command, Rectangle, Renderer, Settings, Theme,
 };
 
 fn main() -> iced::Result {
@@ -225,6 +225,7 @@ impl Program<Message> for Square {
         let mut frame = Frame::new(renderer, bounds.size());
 
         let stroke_width = 3.0;
+        let stroke_color = Color::WHITE;
         let padding = 3.0;
 
         match self.value {
@@ -242,7 +243,9 @@ impl Program<Message> for Square {
                                 bounds.height / 2.0 - padding,
                             ),
                     ),
-                    Stroke::default().with_width(stroke_width),
+                    Stroke::default()
+                        .with_width(stroke_width)
+                        .with_color(stroke_color),
                 );
                 frame.stroke(
                     &Path::line(
@@ -257,13 +260,17 @@ impl Program<Message> for Square {
                                 -bounds.height / 2.0 + padding,
                             ),
                     ),
-                    Stroke::default().with_width(stroke_width),
+                    Stroke::default()
+                        .with_width(stroke_width)
+                        .with_color(stroke_color),
                 );
             }
             Some(SquareValue::O) => {
                 frame.stroke(
                     &Path::circle(frame.center(), bounds.size().width / 2.0 - padding),
-                    Stroke::default().with_width(stroke_width),
+                    Stroke::default()
+                        .with_width(stroke_width)
+                        .with_color(stroke_color),
                 );
             }
             None => {}
