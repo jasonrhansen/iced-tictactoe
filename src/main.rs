@@ -56,9 +56,14 @@ enum Message {
     StartNewGame,
 }
 
+enum Winner {
+    Player(SquareValue),
+    Tie,
+}
+
 struct TicTacToe {
     next_square_value: SquareValue,
-    winner: Option<SquareValue>,
+    winner: Option<Winner>,
     turns: Vec<SquareArray>,
     turn_index: usize,
 }
@@ -161,11 +166,11 @@ impl Application for TicTacToe {
                         .on_press(Message::SquareClicked(square_index))
                 });
 
-        let status = text(if let Some(winner) = self.winner {
-            format!("Player {} won!", winner)
-        } else {
-            format!("It's {}'s turn", self.next_square_value)
-        });
+        let status = match self.winner {
+            Some(Winner::Player(winner)) => text(format!("Player {} won!", winner)),
+            Some(Winner::Tie) => text("It's a tie!"),
+            None => text(format!("It's {}'s turn", self.next_square_value)),
+        };
 
         let board = container(row![column![
             row![
@@ -280,7 +285,7 @@ impl Program<Message> for Square {
     }
 }
 
-fn calculate_winner(squares: &SquareArray) -> Option<SquareValue> {
+fn calculate_winner(squares: &SquareArray) -> Option<Winner> {
     let lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -295,8 +300,12 @@ fn calculate_winner(squares: &SquareArray) -> Option<SquareValue> {
     for line in &lines {
         let [a, b, c] = line;
         if squares[*a].is_some() && squares[*a] == squares[*b] && squares[*a] == squares[*c] {
-            return squares[*a];
+            return squares[*a].map(Winner::Player);
         }
+    }
+
+    if squares.iter().all(|&square| square.is_some()) {
+        return Some(Winner::Tie);
     }
 
     None
