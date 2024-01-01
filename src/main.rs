@@ -226,7 +226,6 @@ impl Program<Message> for Square {
         bounds: Rectangle,
         _cursor: mouse::Cursor,
     ) -> Vec<Geometry> {
-        // We prepare a new `Frame`
         let mut frame = Frame::new(renderer, bounds.size());
 
         let stroke_width = 3.0;
